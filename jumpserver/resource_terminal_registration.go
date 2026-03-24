@@ -15,7 +15,6 @@ func resourceTerminalRegistration() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourceTerminalRegistrationCreate,
 		ReadContext:   resourceTerminalRegistrationRead,
-		UpdateContext: resourceTerminalRegistrationUpdate,
 		DeleteContext: resourceTerminalRegistrationDelete,
 
 		Schema: map[string]*schema.Schema{

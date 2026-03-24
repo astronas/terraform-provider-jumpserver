@@ -15,7 +15,6 @@ func resourceTempToken() *schema.Resource {
 	return &schema.Resource{
 		CreateContext: resourceTempTokenCreate,
 		ReadContext:   resourceTempTokenRead,
-		UpdateContext: resourceTempTokenUpdate,
 		DeleteContext: resourceTempTokenDelete,
 
 		Schema: map[string]*schema.Schema{
