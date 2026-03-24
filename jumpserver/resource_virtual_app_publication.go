@@ -104,8 +104,10 @@ func resourceVirtualAppPublicationRead(ctx context.Context, d *schema.ResourceDa
 		return diag.FromErr(err)
 	}
 
-	setObjectIDField(d, result, "app", "app")
-	setObjectIDField(d, result, "provider", "provider_host")
+	setObjectIDField(d, result, "app")
+	if v, ok := readObjectID(result, "provider"); ok {
+		d.Set("provider_host", v)
+	}
 	setStringField(d, result, "status")
 	setStringField(d, result, "comment")
 
