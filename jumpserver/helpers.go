@@ -117,6 +117,45 @@ func setEnumField(d *schema.ResourceData, data map[string]interface{}, key strin
 	}
 }
 
+// dataSourceLookup performs a GET request with a filter parameter and returns the first matching result.
+// It handles both paginated responses (with "results" key) and direct array responses.
+func (c *Config) dataSourceLookup(basePath, filterKey, filterValue string) (map[string]interface{}, error) {
+	path := fmt.Sprintf("%s?%s=%s", basePath, filterKey, filterValue)
+	resp, err := c.doRequest("GET", path, nil)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("failed to query %s, status=%d", basePath, resp.StatusCode)
+	}
+
+	var body interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, err
+	}
+
+	var items []interface{}
+	switch v := body.(type) {
+	case map[string]interface{}:
+		if results, ok := v["results"].([]interface{}); ok {
+			items = results
+		}
+	case []interface{}:
+		items = v
+	}
+
+	if len(items) == 0 {
+		return nil, fmt.Errorf("no %s found with %s=%s", basePath, filterKey, filterValue)
+	}
+
+	if item, ok := items[0].(map[string]interface{}); ok {
+		return item, nil
+	}
+	return nil, fmt.Errorf("unexpected response format from %s", basePath)
+}
+
 // setObjectIDField sets a field from the API response that may be a string UUID or an object with id.
 func setObjectIDField(d *schema.ResourceData, data map[string]interface{}, key string) {
 	if v, ok := readObjectID(data, key); ok {
