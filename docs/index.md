@@ -58,6 +58,7 @@ The provider authenticates using username/password to obtain a Bearer token from
 
 ### Assets (continued)
 - `jumpserver_protocol_setting` — Manage protocol settings
+- `jumpserver_favorite_asset` — Mark an asset as favorite
 
 ### Accounts
 - `jumpserver_account` — Manage accounts
@@ -65,6 +66,7 @@ The provider authenticates using username/password to obtain a Bearer token from
 - `jumpserver_account_backup_plan` — Manage account backup plans
 - `jumpserver_virtual_account` — Manage virtual accounts
 - `jumpserver_account_risk` — Manage account risk entries
+- `jumpserver_gathered_account` — Manage gathered (discovered) accounts
 - `jumpserver_system_user` — Manage system users (legacy)
 
 ### Permissions & ACLs
@@ -75,6 +77,10 @@ The provider authenticates using username/password to obtain a Bearer token from
 - `jumpserver_login_asset_acl` — Manage login asset ACLs
 - `jumpserver_connect_method_acl` — Manage connect method ACLs
 - `jumpserver_data_masking_rule` — Manage data masking rules
+- `jumpserver_asset_perm_user_relation` — Link user to asset permission
+- `jumpserver_asset_perm_user_group_relation` — Link user group to asset permission
+- `jumpserver_asset_perm_asset_relation` — Link asset to asset permission
+- `jumpserver_asset_perm_node_relation` — Link node to asset permission
 
 ### RBAC
 - `jumpserver_org` — Manage organizations
@@ -90,6 +96,12 @@ The provider authenticates using username/password to obtain a Bearer token from
 - `jumpserver_adhoc` — Manage ad-hoc commands
 - `jumpserver_ops_variable` — Manage ops variables
 - `jumpserver_ticket_flow` — Manage ticket approval flows
+- `jumpserver_ticket` — Manage tickets
+- `jumpserver_apply_asset_ticket` — Manage apply-asset tickets
+- `jumpserver_apply_command_ticket` — Manage apply-command tickets
+- `jumpserver_apply_login_ticket` — Manage apply-login tickets
+- `jumpserver_apply_login_asset_ticket` — Manage apply-login-asset tickets
+- `jumpserver_ticket_comment` — Manage ticket comments
 
 ### Terminal
 - `jumpserver_endpoint` — Manage endpoints
@@ -104,14 +116,23 @@ The provider authenticates using username/password to obtain a Bearer token from
 - `jumpserver_virtual_app_publication` — Manage virtual app publications
 - `jumpserver_app_provider` — Manage application providers
 
+### Terminal & Sessions
+- `jumpserver_terminal` — Manage terminals
+- `jumpserver_session` — Manage sessions
+- `jumpserver_session_sharing` — Manage session sharing
+- `jumpserver_session_join_record` — Manage session join records
+- `jumpserver_terminal_command` — Manage terminal command records
+
 ### Authentication
 - `jumpserver_access_key` — Manage API access keys
 - `jumpserver_integration_application` — Manage integration applications
 - `jumpserver_ssh_key` — Manage SSH keys
 - `jumpserver_passkey` — Manage passkeys (WebAuthn)
+- `jumpserver_connection_token` — Manage connection tokens
 
 ### Settings
 - `jumpserver_leak_password` — Manage leaked password entries
+- `jumpserver_chatai_prompt` — Manage ChatAI prompts
 
 ## Data Sources
 
@@ -132,3 +153,13 @@ The provider authenticates using username/password to obtain a Bearer token from
 - `jumpserver_database` — Look up a database asset by name
 - `jumpserver_gateway` — Look up a gateway by name
 - `jumpserver_applet` — Look up an applet by name
+- `jumpserver_device` — Look up a device by name
+- `jumpserver_web` — Look up a web asset by name
+- `jumpserver_cloud` — Look up a cloud asset by name
+- `jumpserver_custom` — Look up a custom asset by name
+- `jumpserver_asset_permission` — Look up an asset permission by name
+- `jumpserver_asset_category` — Look up an asset category by name
+- `jumpserver_protocol` — Look up a protocol by name
+- `jumpserver_content_type` — Look up a content type by name
+- `jumpserver_terminal` — Look up a terminal by name
+- `jumpserver_ticket_flow` — Look up a ticket flow by name

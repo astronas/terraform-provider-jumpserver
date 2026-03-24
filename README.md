@@ -19,7 +19,7 @@ terraform {
   required_providers {
     jumpserver = {
       source  = "astronas/jumpserver"
-      version = "~> 1.3.0"
+      version = "~> 1.4.0"
     }
   }
 }
@@ -63,6 +63,7 @@ provider "jumpserver" {
 | `jumpserver_labeled_resource` | Attach labels to resources | [labeled_resource.md](docs/resources/labeled_resource.md) |
 | `jumpserver_platform` | Manage platforms | [platform.md](docs/resources/platform.md) |
 | `jumpserver_protocol_setting` | Manage protocol settings | [protocol_setting.md](docs/resources/protocol_setting.md) |
+| `jumpserver_favorite_asset` | Mark an asset as favorite | [favorite_asset.md](docs/resources/favorite_asset.md) |
 
 ### Accounts
 
@@ -73,6 +74,7 @@ provider "jumpserver" {
 | `jumpserver_account_backup_plan` | Manage account backup plans | [account_backup_plan.md](docs/resources/account_backup_plan.md) |
 | `jumpserver_virtual_account` | Manage virtual accounts | [virtual_account.md](docs/resources/virtual_account.md) |
 | `jumpserver_account_risk` | Manage account risk entries | [account_risk.md](docs/resources/account_risk.md) |
+| `jumpserver_gathered_account` | Manage gathered (discovered) accounts | [gathered_account.md](docs/resources/gathered_account.md) |
 | `jumpserver_system_user` | Legacy system users | [system_user.md](docs/resources/system_user.md) |
 
 ### Permissions & ACLs
@@ -86,6 +88,10 @@ provider "jumpserver" {
 | `jumpserver_login_asset_acl` | Manage login asset ACLs | [login_asset_acl.md](docs/resources/login_asset_acl.md) |
 | `jumpserver_connect_method_acl` | Manage connect method ACLs | [connect_method_acl.md](docs/resources/connect_method_acl.md) |
 | `jumpserver_data_masking_rule` | Manage data masking rules | [data_masking_rule.md](docs/resources/data_masking_rule.md) |
+| `jumpserver_asset_perm_user_relation` | Link user to asset permission | [asset_perm_user_relation.md](docs/resources/asset_perm_user_relation.md) |
+| `jumpserver_asset_perm_user_group_relation` | Link user group to asset permission | [asset_perm_user_group_relation.md](docs/resources/asset_perm_user_group_relation.md) |
+| `jumpserver_asset_perm_asset_relation` | Link asset to asset permission | [asset_perm_asset_relation.md](docs/resources/asset_perm_asset_relation.md) |
+| `jumpserver_asset_perm_node_relation` | Link node to asset permission | [asset_perm_node_relation.md](docs/resources/asset_perm_node_relation.md) |
 
 ### RBAC
 
@@ -107,6 +113,12 @@ provider "jumpserver" {
 | `jumpserver_adhoc` | Manage ad-hoc commands | [adhoc.md](docs/resources/adhoc.md) |
 | `jumpserver_ops_variable` | Manage ops variables | [ops_variable.md](docs/resources/ops_variable.md) |
 | `jumpserver_ticket_flow` | Manage ticket approval flows | [ticket_flow.md](docs/resources/ticket_flow.md) |
+| `jumpserver_ticket` | Manage tickets | [ticket.md](docs/resources/ticket.md) |
+| `jumpserver_apply_asset_ticket` | Manage apply-asset tickets | [apply_asset_ticket.md](docs/resources/apply_asset_ticket.md) |
+| `jumpserver_apply_command_ticket` | Manage apply-command tickets | [apply_command_ticket.md](docs/resources/apply_command_ticket.md) |
+| `jumpserver_apply_login_ticket` | Manage apply-login tickets | [apply_login_ticket.md](docs/resources/apply_login_ticket.md) |
+| `jumpserver_apply_login_asset_ticket` | Manage apply-login-asset tickets | [apply_login_asset_ticket.md](docs/resources/apply_login_asset_ticket.md) |
+| `jumpserver_ticket_comment` | Manage ticket comments | [ticket_comment.md](docs/resources/ticket_comment.md) |
 
 ### Infrastructure
 
@@ -125,6 +137,16 @@ provider "jumpserver" {
 | `jumpserver_virtual_app_publication` | Manage virtual app publications | [virtual_app_publication.md](docs/resources/virtual_app_publication.md) |
 | `jumpserver_app_provider` | Manage application providers | [app_provider.md](docs/resources/app_provider.md) |
 
+### Terminal & Sessions
+
+| Resource | Description | Docs |
+|---|---|---|
+| `jumpserver_terminal` | Manage terminals | [terminal.md](docs/resources/terminal.md) |
+| `jumpserver_session` | Manage sessions | [session.md](docs/resources/session.md) |
+| `jumpserver_session_sharing` | Manage session sharing | [session_sharing.md](docs/resources/session_sharing.md) |
+| `jumpserver_session_join_record` | Manage session join records | [session_join_record.md](docs/resources/session_join_record.md) |
+| `jumpserver_terminal_command` | Manage terminal command records | [terminal_command.md](docs/resources/terminal_command.md) |
+
 ### Authentication
 
 | Resource | Description | Docs |
@@ -132,12 +154,14 @@ provider "jumpserver" {
 | `jumpserver_access_key` | Manage API access keys | [access_key.md](docs/resources/access_key.md) |
 | `jumpserver_ssh_key` | Manage SSH keys | [ssh_key.md](docs/resources/ssh_key.md) |
 | `jumpserver_passkey` | Manage passkeys (WebAuthn) | [passkey.md](docs/resources/passkey.md) |
+| `jumpserver_connection_token` | Manage connection tokens | [connection_token.md](docs/resources/connection_token.md) |
 
 ### Settings
 
 | Resource | Description | Docs |
 |---|---|---|
 | `jumpserver_leak_password` | Manage leaked password entries | [leak_password.md](docs/resources/leak_password.md) |
+| `jumpserver_chatai_prompt` | Manage ChatAI prompts | [chatai_prompt.md](docs/resources/chatai_prompt.md) |
 
 ## Data Sources
 
@@ -160,6 +184,16 @@ provider "jumpserver" {
 | `jumpserver_database` | Look up a database asset by name | [database.md](docs/data-sources/database.md) |
 | `jumpserver_gateway` | Look up a gateway by name | [gateway.md](docs/data-sources/gateway.md) |
 | `jumpserver_applet` | Look up an applet by name | [applet.md](docs/data-sources/applet.md) |
+| `jumpserver_device` | Look up a device by name | [device.md](docs/data-sources/device.md) |
+| `jumpserver_web` | Look up a web asset by name | [web.md](docs/data-sources/web.md) |
+| `jumpserver_cloud` | Look up a cloud asset by name | [cloud.md](docs/data-sources/cloud.md) |
+| `jumpserver_custom` | Look up a custom asset by name | [custom.md](docs/data-sources/custom.md) |
+| `jumpserver_asset_permission` | Look up an asset permission by name | [asset_permission.md](docs/data-sources/asset_permission.md) |
+| `jumpserver_asset_category` | Look up an asset category by name | [asset_category.md](docs/data-sources/asset_category.md) |
+| `jumpserver_protocol` | Look up a protocol by name | [protocol.md](docs/data-sources/protocol.md) |
+| `jumpserver_content_type` | Look up a content type by name | [content_type.md](docs/data-sources/content_type.md) |
+| `jumpserver_terminal` | Look up a terminal by name | [terminal.md](docs/data-sources/terminal.md) |
+| `jumpserver_ticket_flow` | Look up a ticket flow by name | [ticket_flow.md](docs/data-sources/ticket_flow.md) |
 
 ## Example Usage
 
