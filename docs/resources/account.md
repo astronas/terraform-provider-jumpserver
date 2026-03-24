@@ -43,6 +43,7 @@ resource "jumpserver_account" "ssh_key_deploy" {
 - `secret` - (Optional, Sensitive) The secret value (password, SSH key content, etc.).
 - `passphrase` - (Optional, Sensitive) Passphrase for SSH key (only used when `secret_type` is `ssh_key`).
 - `asset` - (Required, ForceNew) The ID of the asset this account belongs to. Changing this forces a new resource.
+- `template` - (Optional, ForceNew) Account template ID used to create the account from an existing template.
 - `privileged` - (Optional) Whether this is a privileged account. Default: `false`.
 - `is_active` - (Optional) Whether the account is active. Default: `true`.
 - `su_from` - (Optional) The ID of the account to switch from (su).

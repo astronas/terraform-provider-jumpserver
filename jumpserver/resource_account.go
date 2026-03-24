@@ -57,6 +57,12 @@ func resourceAccount() *schema.Resource {
 				ForceNew:    true,
 				Description: "The ID of the asset this account belongs to.",
 			},
+			"template": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				ForceNew:    true,
+				Description: "Account template ID to create account from.",
+			},
 			"privileged": {
 				Type:        schema.TypeBool,
 				Optional:    true,
@@ -122,6 +128,9 @@ func resourceAccountCreate(ctx context.Context, d *schema.ResourceData, m interf
 	if v, ok := d.GetOk("su_from"); ok {
 		accountData["su_from"] = v.(string)
 	}
+	if v, ok := d.GetOk("template"); ok {
+		accountData["template"] = v.(string)
+	}
 	if v, ok := d.GetOk("comment"); ok {
 		accountData["comment"] = v.(string)
 	}
@@ -177,6 +186,7 @@ func resourceAccountRead(ctx context.Context, d *schema.ResourceData, m interfac
 	setStringField(d, account, "username")
 	setEnumField(d, account, "secret_type")
 	setObjectIDField(d, account, "asset")
+	setObjectIDField(d, account, "template")
 	setBoolField(d, account, "privileged")
 	setBoolField(d, account, "is_active")
 	setObjectIDField(d, account, "su_from")
@@ -205,6 +215,9 @@ func resourceAccountUpdate(ctx context.Context, d *schema.ResourceData, m interf
 	}
 	if v, ok := d.GetOk("su_from"); ok {
 		accountData["su_from"] = v.(string)
+	}
+	if v, ok := d.GetOk("template"); ok {
+		accountData["template"] = v.(string)
 	}
 	if v, ok := d.GetOk("comment"); ok {
 		accountData["comment"] = v.(string)
