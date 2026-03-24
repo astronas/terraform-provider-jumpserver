@@ -1,0 +1,180 @@
+package jumpserver
+
+import (
+	"bytes"
+	"context"
+	"crypto/tls"
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
+)
+
+type Config struct {
+	Token         string
+	BaseURL       string
+	Username      string
+	Password      string
+	SkipTLSVerify bool
+	APIVersion    string
+}
+
+func (c *Config) NewHTTPClient() *http.Client {
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: c.SkipTLSVerify,
+		},
+	}
+	return &http.Client{Transport: transport}
+}
+
+// GetAPIEndpoint returns the API endpoint URL based on the configured API version
+func (c *Config) GetAPIEndpoint(path string) string {
+	if c.APIVersion == "v2" {
+		return fmt.Sprintf("%s/api/v2/%s", c.BaseURL, path)
+	}
+	return fmt.Sprintf("%s/api/v1/%s", c.BaseURL, path)
+}
+
+func Provider() *schema.Provider {
+	return &schema.Provider{
+		Schema: map[string]*schema.Schema{
+			"base_url": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"username": {
+				Type:     schema.TypeString,
+				Required: true,
+			},
+			"password": {
+				Type:      schema.TypeString,
+				Required:  true,
+				Sensitive: true,
+			},
+			"skip_tls_verify": {
+				Type:        schema.TypeBool,
+				Optional:    true,
+				Default:     false,
+				Description: "If true, skip SSL certificate validation (insecure).",
+			},
+			"api_version": {
+				Type:        schema.TypeString,
+				Optional:    true,
+				Default:     "v1",
+				Description: "JumpServer API version to use (v1 or v2). Default is v1.",
+			},
+		},
+		ResourcesMap: map[string]*schema.Resource{
+			"jumpserver_host":             resourceHost(),
+			"jumpserver_user":             resourceUser(),
+			"jumpserver_user_group":       resourceUserGroup(),
+			"jumpserver_node":             resourceNode(),
+			"jumpserver_zone":             resourceZone(),
+			"jumpserver_label":            resourceLabel(),
+			"jumpserver_account":          resourceAccount(),
+			"jumpserver_database":         resourceDatabase(),
+			"jumpserver_device":           resourceDevice(),
+			"jumpserver_web":              resourceWeb(),
+			"jumpserver_gateway":          resourceGateway(),
+			"jumpserver_cloud":            resourceCloud(),
+			"jumpserver_custom":           resourceCustom(),
+			"jumpserver_asset":              resourceAsset(),
+			"jumpserver_system_user":        resourceSystemUser(),
+			"jumpserver_asset_permission":   resourceAssetPermission(),
+			"jumpserver_command_group":      resourceCommandGroup(),
+			"jumpserver_command_filter_acl": resourceCommandFilterACL(),
+			"jumpserver_login_acl":          resourceLoginACL(),
+			"jumpserver_login_asset_acl":    resourceLoginAssetACL(),
+			"jumpserver_connect_method_acl": resourceConnectMethodACL(),
+			"jumpserver_data_masking_rule":          resourceDataMaskingRule(),
+			"jumpserver_account_template":           resourceAccountTemplate(),
+			"jumpserver_account_backup_plan":        resourceAccountBackupPlan(),
+			"jumpserver_integration_application":    resourceIntegrationApplication(),
+			"jumpserver_endpoint":                   resourceEndpoint(),
+			"jumpserver_endpoint_rule":              resourceEndpointRule(),
+			"jumpserver_command_storage":            resourceCommandStorage(),
+			"jumpserver_replay_storage":             resourceReplayStorage(),
+			"jumpserver_org_role":                   resourceOrgRole(),
+			"jumpserver_system_role":                resourceSystemRole(),
+			"jumpserver_role_binding":               resourceRoleBinding(),
+			"jumpserver_job":                        resourceJob(),
+			"jumpserver_playbook":                   resourcePlaybook(),
+		},
+		ConfigureContextFunc: providerConfigure,
+	}
+}
+
+func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	baseURL := d.Get("base_url").(string)
+	username := d.Get("username").(string)
+	password := d.Get("password").(string)
+	skipTLS := d.Get("skip_tls_verify").(bool)
+	apiVersion := d.Get("api_version").(string)
+
+	transport := &http.Transport{
+		TLSClientConfig: &tls.Config{
+			InsecureSkipVerify: skipTLS,
+		},
+	}
+	client := &http.Client{Transport: transport}
+
+	token, err := getToken(client, baseURL, username, password, apiVersion)
+	if err != nil {
+		return nil, diag.FromErr(err)
+	}
+
+	return &Config{
+		Token:         token,
+		BaseURL:       baseURL,
+		Username:      username,
+		Password:      password,
+		SkipTLSVerify: skipTLS,
+		APIVersion:    apiVersion,
+	}, diags
+}
+
+func getToken(client *http.Client, baseURL, username, password, apiVersion string) (string, error) {
+	var url string
+	if apiVersion == "v2" {
+		url = baseURL + "/api/v2/authentication/auth/"
+	} else {
+		url = baseURL + "/api/v1/authentication/auth/"
+	}
+
+	credentials := map[string]string{
+		"username": username,
+		"password": password,
+	}
+	jsonValue, _ := json.Marshal(credentials)
+
+	resp, err := client.Post(url, "application/json", bytes.NewBuffer(jsonValue))
+	if err != nil {
+		// If v2 fails, try v1 as fallback
+		if apiVersion == "v2" {
+			return getToken(client, baseURL, username, password, "v1")
+		}
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	var result map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+		return "", err
+	}
+
+	if token, ok := result["token"].(string); ok {
+		return token, nil
+	}
+
+	// If v2 fails to get token, try v1 as fallback
+	if apiVersion == "v2" {
+		return getToken(client, baseURL, username, password, "v1")
+	}
+
+	return "", fmt.Errorf("unable to fetch token from %s", url)
+}
