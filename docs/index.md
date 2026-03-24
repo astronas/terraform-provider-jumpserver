@@ -86,6 +86,7 @@ The provider authenticates using username/password to obtain a Bearer token from
 - `jumpserver_org` — Manage organizations
 - `jumpserver_org_role` — Manage organization roles
 - `jumpserver_system_role` — Manage system roles
+- `jumpserver_rbac_role` — Manage RBAC roles
 - `jumpserver_role_binding` — Manage role bindings
 - `jumpserver_org_role_binding` — Manage organization role bindings
 - `jumpserver_system_role_binding` — Manage system role bindings
@@ -118,6 +119,7 @@ The provider authenticates using username/password to obtain a Bearer token from
 
 ### Terminal & Sessions
 - `jumpserver_terminal` — Manage terminals
+- `jumpserver_terminal_registration` — Register new terminals
 - `jumpserver_session` — Manage sessions
 - `jumpserver_session_sharing` — Manage session sharing
 - `jumpserver_session_join_record` — Manage session join records
@@ -129,10 +131,16 @@ The provider authenticates using username/password to obtain a Bearer token from
 - `jumpserver_ssh_key` — Manage SSH keys
 - `jumpserver_passkey` — Manage passkeys (WebAuthn)
 - `jumpserver_connection_token` — Manage connection tokens
+- `jumpserver_super_connection_token` — Manage super connection tokens
+- `jumpserver_temp_token` — Manage temporary tokens
 
 ### Settings
+- `jumpserver_setting` — Manage basic settings (singleton)
 - `jumpserver_leak_password` — Manage leaked password entries
 - `jumpserver_chatai_prompt` — Manage ChatAI prompts
+
+### Notifications
+- `jumpserver_system_msg_subscription` — Manage system message subscriptions
 
 ## Data Sources
 
@@ -163,3 +171,12 @@ The provider authenticates using username/password to obtain a Bearer token from
 - `jumpserver_content_type` — Look up a content type by name
 - `jumpserver_terminal` — Look up a terminal by name
 - `jumpserver_ticket_flow` — Look up a ticket flow by name
+- `jumpserver_login_log` — Look up login logs by username
+- `jumpserver_operate_log` — Look up operate logs by user
+- `jumpserver_activity_log` — Look up activity logs by resource ID
+- `jumpserver_rbac_permission` — Look up an RBAC permission by name
+- `jumpserver_server_info` — Retrieve server information
+- `jumpserver_site_message` — Look up a site message by subject
+- `jumpserver_sms_backend` — Look up an SMS backend by name
+- `jumpserver_ops_task` — Look up an ops task by name
+- `jumpserver_user_msg_subscription` — Look up user message subscriptions

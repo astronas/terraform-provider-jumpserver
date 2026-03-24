@@ -19,7 +19,7 @@ terraform {
   required_providers {
     jumpserver = {
       source  = "astronas/jumpserver"
-      version = "~> 1.4.0"
+      version = "~> 1.5.0"
     }
   }
 }
@@ -100,6 +100,7 @@ provider "jumpserver" {
 | `jumpserver_org` | Manage organizations | [org.md](docs/resources/org.md) |
 | `jumpserver_org_role` | Manage organization roles | [org_role.md](docs/resources/org_role.md) |
 | `jumpserver_system_role` | Manage system roles | [system_role.md](docs/resources/system_role.md) |
+| `jumpserver_rbac_role` | Manage RBAC roles | [rbac_role.md](docs/resources/rbac_role.md) |
 | `jumpserver_role_binding` | Bind roles to users | [role_binding.md](docs/resources/role_binding.md) |
 | `jumpserver_org_role_binding` | Bind org roles to users | [org_role_binding.md](docs/resources/org_role_binding.md) |
 | `jumpserver_system_role_binding` | Bind system roles to users | [system_role_binding.md](docs/resources/system_role_binding.md) |
@@ -142,6 +143,7 @@ provider "jumpserver" {
 | Resource | Description | Docs |
 |---|---|---|
 | `jumpserver_terminal` | Manage terminals | [terminal.md](docs/resources/terminal.md) |
+| `jumpserver_terminal_registration` | Register new terminals | [terminal_registration.md](docs/resources/terminal_registration.md) |
 | `jumpserver_session` | Manage sessions | [session.md](docs/resources/session.md) |
 | `jumpserver_session_sharing` | Manage session sharing | [session_sharing.md](docs/resources/session_sharing.md) |
 | `jumpserver_session_join_record` | Manage session join records | [session_join_record.md](docs/resources/session_join_record.md) |
@@ -155,11 +157,14 @@ provider "jumpserver" {
 | `jumpserver_ssh_key` | Manage SSH keys | [ssh_key.md](docs/resources/ssh_key.md) |
 | `jumpserver_passkey` | Manage passkeys (WebAuthn) | [passkey.md](docs/resources/passkey.md) |
 | `jumpserver_connection_token` | Manage connection tokens | [connection_token.md](docs/resources/connection_token.md) |
+| `jumpserver_super_connection_token` | Manage super connection tokens | [super_connection_token.md](docs/resources/super_connection_token.md) |
+| `jumpserver_temp_token` | Manage temporary tokens | [temp_token.md](docs/resources/temp_token.md) |
 
 ### Settings
 
 | Resource | Description | Docs |
 |---|---|---|
+| `jumpserver_setting` | Manage basic settings (singleton) | [setting.md](docs/resources/setting.md) |
 | `jumpserver_leak_password` | Manage leaked password entries | [leak_password.md](docs/resources/leak_password.md) |
 | `jumpserver_chatai_prompt` | Manage ChatAI prompts | [chatai_prompt.md](docs/resources/chatai_prompt.md) |
 
@@ -194,6 +199,21 @@ provider "jumpserver" {
 | `jumpserver_content_type` | Look up a content type by name | [content_type.md](docs/data-sources/content_type.md) |
 | `jumpserver_terminal` | Look up a terminal by name | [terminal.md](docs/data-sources/terminal.md) |
 | `jumpserver_ticket_flow` | Look up a ticket flow by name | [ticket_flow.md](docs/data-sources/ticket_flow.md) |
+| `jumpserver_login_log` | Look up login logs by username | [login_log.md](docs/data-sources/login_log.md) |
+| `jumpserver_operate_log` | Look up operate logs by user | [operate_log.md](docs/data-sources/operate_log.md) |
+| `jumpserver_activity_log` | Look up activity logs by resource ID | [activity_log.md](docs/data-sources/activity_log.md) |
+| `jumpserver_rbac_permission` | Look up an RBAC permission by name | [rbac_permission.md](docs/data-sources/rbac_permission.md) |
+| `jumpserver_server_info` | Retrieve server information | [server_info.md](docs/data-sources/server_info.md) |
+| `jumpserver_site_message` | Look up a site message by subject | [site_message.md](docs/data-sources/site_message.md) |
+| `jumpserver_sms_backend` | Look up an SMS backend by name | [sms_backend.md](docs/data-sources/sms_backend.md) |
+| `jumpserver_ops_task` | Look up an ops task by name | [ops_task.md](docs/data-sources/ops_task.md) |
+| `jumpserver_user_msg_subscription` | Look up user message subscriptions | [user_msg_subscription.md](docs/data-sources/user_msg_subscription.md) |
+
+### Notifications
+
+| Resource | Description | Docs |
+|---|---|---|
+| `jumpserver_system_msg_subscription` | Manage system message subscriptions | [system_msg_subscription.md](docs/resources/system_msg_subscription.md) |
 
 ## Example Usage
 
