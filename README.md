@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://download.jumpserver.org/images/jumpserver-logo.svg" alt="JumpServer Logo" width="200">
+  <img src="https://download.jumpserver.org/images/jumpserver-logo.svg" alt="JumpServer Logo" width="400">
 </p>
 
 <h1 align="center">Terraform Provider for JumpServer</h1>
