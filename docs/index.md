@@ -4,6 +4,8 @@ description: |-
   The JumpServer provider allows you to manage JumpServer resources using Terraform.
 ---
 
+![JumpServer Logo](https://download.jumpserver.org/images/jumpserver-logo.svg)
+
 # JumpServer Provider
 
 The JumpServer provider allows you to manage [JumpServer](https://www.jumpserver.org/) resources using Terraform — including users, assets, accounts, permissions, RBAC, operations, and infrastructure.
