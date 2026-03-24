@@ -37,6 +37,7 @@ The provider authenticates using username/password to obtain a Bearer token from
 ### Users & Groups
 - `jumpserver_user` — Manage users
 - `jumpserver_user_group` — Manage user groups
+- `jumpserver_user_group_relation` — Manage user-to-group relationships
 
 ### Assets
 - `jumpserver_host` — Manage host assets
@@ -55,11 +56,15 @@ The provider authenticates using username/password to obtain a Bearer token from
 - `jumpserver_labeled_resource` — Attach labels to resources
 - `jumpserver_platform` — Manage platforms
 
+### Assets (continued)
+- `jumpserver_protocol_setting` — Manage protocol settings
+
 ### Accounts
 - `jumpserver_account` — Manage accounts
 - `jumpserver_account_template` — Manage account templates
 - `jumpserver_account_backup_plan` — Manage account backup plans
 - `jumpserver_virtual_account` — Manage virtual accounts
+- `jumpserver_account_risk` — Manage account risk entries
 - `jumpserver_system_user` — Manage system users (legacy)
 
 ### Permissions & ACLs
@@ -93,13 +98,20 @@ The provider authenticates using username/password to obtain a Bearer token from
 - `jumpserver_replay_storage` — Manage replay storages
 - `jumpserver_applet` — Manage applets
 - `jumpserver_applet_host` — Manage applet hosts
+- `jumpserver_applet_host_deployment` — Manage applet host deployments
 - `jumpserver_applet_publication` — Manage applet publications
 - `jumpserver_virtual_app` — Manage virtual apps
 - `jumpserver_virtual_app_publication` — Manage virtual app publications
+- `jumpserver_app_provider` — Manage application providers
 
 ### Authentication
 - `jumpserver_access_key` — Manage API access keys
 - `jumpserver_integration_application` — Manage integration applications
+- `jumpserver_ssh_key` — Manage SSH keys
+- `jumpserver_passkey` — Manage passkeys (WebAuthn)
+
+### Settings
+- `jumpserver_leak_password` — Manage leaked password entries
 
 ## Data Sources
 
@@ -112,3 +124,11 @@ The provider authenticates using username/password to obtain a Bearer token from
 - `jumpserver_org` — Look up an organization by name
 - `jumpserver_org_role` — Look up an organization role by name
 - `jumpserver_system_role` — Look up a system role by name
+- `jumpserver_host` — Look up a host by name
+- `jumpserver_label` — Look up a label by name
+- `jumpserver_account` — Look up an account by name
+- `jumpserver_account_template` — Look up an account template by name
+- `jumpserver_endpoint` — Look up an endpoint by name
+- `jumpserver_database` — Look up a database asset by name
+- `jumpserver_gateway` — Look up a gateway by name
+- `jumpserver_applet` — Look up an applet by name

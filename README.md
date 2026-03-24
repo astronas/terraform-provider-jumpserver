@@ -19,7 +19,7 @@ terraform {
   required_providers {
     jumpserver = {
       source  = "astronas/jumpserver"
-      version = "~> 1.2.0"
+      version = "~> 1.3.0"
     }
   }
 }
@@ -41,6 +41,7 @@ provider "jumpserver" {
 |---|---|---|
 | `jumpserver_user` | Manage users | [user.md](docs/resources/user.md) |
 | `jumpserver_user_group` | Manage user groups | [user_group.md](docs/resources/user_group.md) |
+| `jumpserver_user_group_relation` | Manage user-to-group relationships | [user_group_relation.md](docs/resources/user_group_relation.md) |
 
 ### Assets
 
@@ -61,6 +62,7 @@ provider "jumpserver" {
 | `jumpserver_label` | Manage asset labels | [label.md](docs/resources/label.md) |
 | `jumpserver_labeled_resource` | Attach labels to resources | [labeled_resource.md](docs/resources/labeled_resource.md) |
 | `jumpserver_platform` | Manage platforms | [platform.md](docs/resources/platform.md) |
+| `jumpserver_protocol_setting` | Manage protocol settings | [protocol_setting.md](docs/resources/protocol_setting.md) |
 
 ### Accounts
 
@@ -70,6 +72,7 @@ provider "jumpserver" {
 | `jumpserver_account_template` | Manage account templates | [account_template.md](docs/resources/account_template.md) |
 | `jumpserver_account_backup_plan` | Manage account backup plans | [account_backup_plan.md](docs/resources/account_backup_plan.md) |
 | `jumpserver_virtual_account` | Manage virtual accounts | [virtual_account.md](docs/resources/virtual_account.md) |
+| `jumpserver_account_risk` | Manage account risk entries | [account_risk.md](docs/resources/account_risk.md) |
 | `jumpserver_system_user` | Legacy system users | [system_user.md](docs/resources/system_user.md) |
 
 ### Permissions & ACLs
@@ -116,15 +119,25 @@ provider "jumpserver" {
 | `jumpserver_integration_application` | Manage integration applications | [integration_application.md](docs/resources/integration_application.md) |
 | `jumpserver_applet` | Manage applets | [applet.md](docs/resources/applet.md) |
 | `jumpserver_applet_host` | Manage applet hosts | [applet_host.md](docs/resources/applet_host.md) |
+| `jumpserver_applet_host_deployment` | Manage applet host deployments | [applet_host_deployment.md](docs/resources/applet_host_deployment.md) |
 | `jumpserver_applet_publication` | Manage applet publications | [applet_publication.md](docs/resources/applet_publication.md) |
 | `jumpserver_virtual_app` | Manage virtual apps | [virtual_app.md](docs/resources/virtual_app.md) |
 | `jumpserver_virtual_app_publication` | Manage virtual app publications | [virtual_app_publication.md](docs/resources/virtual_app_publication.md) |
+| `jumpserver_app_provider` | Manage application providers | [app_provider.md](docs/resources/app_provider.md) |
 
 ### Authentication
 
 | Resource | Description | Docs |
 |---|---|---|
 | `jumpserver_access_key` | Manage API access keys | [access_key.md](docs/resources/access_key.md) |
+| `jumpserver_ssh_key` | Manage SSH keys | [ssh_key.md](docs/resources/ssh_key.md) |
+| `jumpserver_passkey` | Manage passkeys (WebAuthn) | [passkey.md](docs/resources/passkey.md) |
+
+### Settings
+
+| Resource | Description | Docs |
+|---|---|---|
+| `jumpserver_leak_password` | Manage leaked password entries | [leak_password.md](docs/resources/leak_password.md) |
 
 ## Data Sources
 
@@ -139,6 +152,14 @@ provider "jumpserver" {
 | `jumpserver_org` | Look up an organization by name | [org.md](docs/data-sources/org.md) |
 | `jumpserver_org_role` | Look up an org role by name | [org_role.md](docs/data-sources/org_role.md) |
 | `jumpserver_system_role` | Look up a system role by name | [system_role.md](docs/data-sources/system_role.md) |
+| `jumpserver_host` | Look up a host by name | [host.md](docs/data-sources/host.md) |
+| `jumpserver_label` | Look up a label by name | [label.md](docs/data-sources/label.md) |
+| `jumpserver_account` | Look up an account by name | [account.md](docs/data-sources/account.md) |
+| `jumpserver_account_template` | Look up an account template by name | [account_template.md](docs/data-sources/account_template.md) |
+| `jumpserver_endpoint` | Look up an endpoint by name | [endpoint.md](docs/data-sources/endpoint.md) |
+| `jumpserver_database` | Look up a database asset by name | [database.md](docs/data-sources/database.md) |
+| `jumpserver_gateway` | Look up a gateway by name | [gateway.md](docs/data-sources/gateway.md) |
+| `jumpserver_applet` | Look up an applet by name | [applet.md](docs/data-sources/applet.md) |
 
 ## Example Usage
 
