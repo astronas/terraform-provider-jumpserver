@@ -54,3 +54,11 @@ resource "jumpserver_account" "ssh_key_deploy" {
 ## Attribute Reference
 
 - `id` - The UUID of the account.
+
+## Import
+
+Accounts can be imported using their JumpServer UUID:
+
+```shell
+terraform import jumpserver_account.ssh_root <account-uuid>
+```
