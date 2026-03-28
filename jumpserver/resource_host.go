@@ -218,12 +218,21 @@ func resourceHostRead(ctx context.Context, d *schema.ResourceData, m interface{}
 		}
 	}
 	if nodes, ok := result["nodes"].([]interface{}); ok {
-		d.Set("node_ids", nodes)
-		if len(nodes) > 0 {
-			if nodeID, ok := nodes[0].(string); ok {
-				if nodeName, err := findNodeNameByID(c, nodeID); err == nil {
-					d.Set("node_name", nodeName)
+		nodeIDs := make([]string, 0, len(nodes))
+		for _, n := range nodes {
+			switch v := n.(type) {
+			case string:
+				nodeIDs = append(nodeIDs, v)
+			case map[string]interface{}:
+				if id, ok := v["id"].(string); ok {
+					nodeIDs = append(nodeIDs, id)
 				}
+			}
+		}
+		d.Set("node_ids", nodeIDs)
+		if len(nodeIDs) > 0 {
+			if nodeName, err := findNodeNameByID(c, nodeIDs[0]); err == nil {
+				d.Set("node_name", nodeName)
 			}
 		}
 	}
