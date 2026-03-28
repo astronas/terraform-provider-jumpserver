@@ -19,6 +19,9 @@ func resourceHost() *schema.Resource {
 		ReadContext:   resourceHostRead,
 		UpdateContext: resourceHostUpdate,
 		DeleteContext: resourceHostDelete,
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 
 		Schema: map[string]*schema.Schema{
 			"name": {
@@ -210,9 +213,19 @@ func resourceHostRead(ctx context.Context, d *schema.ResourceData, m interface{}
 	setIntField(d, result, "platform")
 	if zone, ok := result["zone"].(string); ok {
 		d.Set("zone_id", zone)
+		if zoneName, err := findZoneNameByID(c, zone); err == nil {
+			d.Set("zone_name", zoneName)
+		}
 	}
 	if nodes, ok := result["nodes"].([]interface{}); ok {
 		d.Set("node_ids", nodes)
+		if len(nodes) > 0 {
+			if nodeID, ok := nodes[0].(string); ok {
+				if nodeName, err := findNodeNameByID(c, nodeID); err == nil {
+					d.Set("node_name", nodeName)
+				}
+			}
+		}
 	}
 
 	if accounts, ok := result["accounts"].([]interface{}); ok {
@@ -429,4 +442,48 @@ func flattenProtocols(protocols []interface{}) []interface{} {
 		result = append(result, proto)
 	}
 	return result
+}
+
+func findZoneNameByID(c *Config, zoneID string) (string, error) {
+	resp, err := c.doRequest("GET", "assets/zones/"+zoneID+"/", nil)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("failed to get zone %s, status=%d", zoneID, resp.StatusCode)
+	}
+
+	var zone map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&zone); err != nil {
+		return "", err
+	}
+
+	if name, ok := zone["name"].(string); ok {
+		return name, nil
+	}
+	return "", fmt.Errorf("zone '%s' has no 'name' field", zoneID)
+}
+
+func findNodeNameByID(c *Config, nodeID string) (string, error) {
+	resp, err := c.doRequest("GET", "assets/nodes/"+nodeID+"/", nil)
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return "", fmt.Errorf("failed to get node %s, status=%d", nodeID, resp.StatusCode)
+	}
+
+	var node map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&node); err != nil {
+		return "", err
+	}
+
+	if name, ok := node["name"].(string); ok {
+		return name, nil
+	}
+	return "", fmt.Errorf("node '%s' has no 'name' field", nodeID)
 }

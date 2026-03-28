@@ -78,6 +78,16 @@ In addition to the arguments above, the following attributes are exported:
 ## Notes
 
 - If the specified `zone_name` or `node_name` do not exist in Jumpserver, creation of the host fails. This resource does **not** create or delete zones/nodes.
+
+## Import
+
+Hosts can be imported using their JumpServer UUID:
+
+```shell
+terraform import jumpserver_host.example_host <host-uuid>
+```
+
+On import, `zone_name` and `node_name` are automatically resolved from the API.
 - During updates:
     - If you change `zone_name` or `node_name`, the provider will look up new IDs and update the host accordingly.
 - During `destroy`, only the host is deleted. Zones and nodes remain intact.
