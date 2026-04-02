@@ -66,6 +66,12 @@ func resourceAssetPermission() *schema.Resource {
 				Optional:    true,
 				Description: "List of allowed actions (e.g. connect, upload, download).",
 			},
+			"accounts": {
+				Type:        schema.TypeList,
+				Elem:        &schema.Schema{Type: schema.TypeString},
+				Optional:    true,
+				Description: "List of accounts allowed by this permission (e.g. @ALL, @SPEC, or specific account IDs). Replaces system_users in JumpServer v4.",
+			},
 		},
 	}
 }
@@ -82,6 +88,7 @@ func resourceAssetPermissionCreate(ctx context.Context, d *schema.ResourceData, 
 		"nodes":        d.Get("nodes").([]interface{}),
 		"system_users": d.Get("system_users").([]interface{}),
 		"actions":      d.Get("actions").([]interface{}),
+		"accounts":     d.Get("accounts").([]interface{}),
 	}
 
 	resp, err := c.doRequest("POST", assetPermissionBasePath, permission)
@@ -151,6 +158,9 @@ func resourceAssetPermissionRead(ctx context.Context, d *schema.ResourceData, m 
 	if actions, ok := result["actions"].([]interface{}); ok {
 		d.Set("actions", actions)
 	}
+	if accounts, ok := result["accounts"].([]interface{}); ok {
+		d.Set("accounts", accounts)
+	}
 
 	return diags
 }
@@ -167,6 +177,7 @@ func resourceAssetPermissionUpdate(ctx context.Context, d *schema.ResourceData, 
 		"nodes":        d.Get("nodes").([]interface{}),
 		"system_users": d.Get("system_users").([]interface{}),
 		"actions":      d.Get("actions").([]interface{}),
+		"accounts":     d.Get("accounts").([]interface{}),
 	}
 
 	resp, err := c.doRequest("PUT", assetPermissionBasePath+d.Id()+"/", permission)

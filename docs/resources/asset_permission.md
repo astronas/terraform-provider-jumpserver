@@ -20,6 +20,7 @@ resource "jumpserver_asset_permission" "example_permission" {
   assets       = ["<asset-uuid>"]
   nodes        = ["<node-uuid>"]
   system_users = ["<system-user-uuid>"]
+  accounts     = ["@ALL"]
   actions      = ["connect"]
 }
 ```
@@ -34,6 +35,7 @@ resource "jumpserver_asset_permission" "example_permission" {
 * `nodes` - (Optional) List of node IDs covered by this permission.
 * `system_users` - (Optional) List of system user IDs allowed by this permission.
 * `actions` - (Optional) List of allowed actions (e.g. `connect`, `upload`, `download`).
+* `accounts` - (Optional) List of accounts allowed by this permission (e.g. `@ALL`, `@SPEC`, or specific account IDs). Replaces `system_users` in JumpServer v4.
 
 ## Attribute Reference
 
