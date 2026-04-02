@@ -17,6 +17,9 @@ func resourceFavoriteAsset() *schema.Resource {
 		ReadContext:   resourceFavoriteAssetRead,
 		DeleteContext: resourceFavoriteAssetDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"asset": {
 				Type:        schema.TypeString,

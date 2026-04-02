@@ -18,6 +18,9 @@ func resourceDirectory() *schema.Resource {
 		UpdateContext: resourceDirectoryUpdate,
 		DeleteContext: resourceDirectoryDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
@@ -148,6 +151,10 @@ func resourceDirectoryCreate(ctx context.Context, d *schema.ResourceData, m inte
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_directory", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
 		return diag.Errorf("Error creating directory asset: %s", resp.Status)

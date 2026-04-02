@@ -161,6 +161,10 @@ func resourceHostCreate(ctx context.Context, d *schema.ResourceData, m interface
 	}
 	defer resp.Body.Close()
 
+	if diags := checkAlreadyExists(resp, "jumpserver_host", d.Get("name").(string)); diags != nil {
+		return diags
+	}
+
 	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
 		return diag.Errorf("Failed to create host in JumpServer. HTTP status: %d", resp.StatusCode)
 	}

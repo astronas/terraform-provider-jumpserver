@@ -19,6 +19,9 @@ func resourceVirtualAccount() *schema.Resource {
 		UpdateContext: resourceVirtualAccountUpdate,
 		DeleteContext: resourceVirtualAccountDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"alias": {
 				Type:     schema.TypeString,
@@ -66,6 +69,10 @@ func resourceVirtualAccountCreate(ctx context.Context, d *schema.ResourceData, m
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_virtual_account", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating virtual account: %s", resp.Status)

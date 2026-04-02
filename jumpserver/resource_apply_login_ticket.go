@@ -18,6 +18,9 @@ func resourceApplyLoginTicket() *schema.Resource {
 		UpdateContext: resourceApplyLoginTicketUpdate,
 		DeleteContext: resourceApplyLoginTicketDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"title": {
 				Type:        schema.TypeString,
@@ -103,6 +106,10 @@ func resourceApplyLoginTicketCreate(ctx context.Context, d *schema.ResourceData,
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_apply_login_ticket", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating apply login ticket: %s", resp.Status)

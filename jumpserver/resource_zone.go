@@ -18,6 +18,9 @@ func resourceZone() *schema.Resource {
 		UpdateContext: resourceZoneUpdate,
 		DeleteContext: resourceZoneDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -50,6 +53,10 @@ func resourceZoneCreate(ctx context.Context, d *schema.ResourceData, m interface
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_zone", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating zone: %s", resp.Status)

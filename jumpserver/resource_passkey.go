@@ -18,6 +18,9 @@ func resourcePasskey() *schema.Resource {
 		UpdateContext: resourcePasskeyUpdate,
 		DeleteContext: resourcePasskeyDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,

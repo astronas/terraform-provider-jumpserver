@@ -19,6 +19,9 @@ func resourceAccountBackupPlan() *schema.Resource {
 		UpdateContext: resourceAccountBackupPlanUpdate,
 		DeleteContext: resourceAccountBackupPlanDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -171,6 +174,10 @@ func resourceAccountBackupPlanCreate(ctx context.Context, d *schema.ResourceData
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_account_backup_plan", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating account backup plan: %s", resp.Status)

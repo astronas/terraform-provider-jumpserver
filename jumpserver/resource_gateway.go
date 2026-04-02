@@ -18,6 +18,9 @@ func resourceGateway() *schema.Resource {
 		UpdateContext: resourceGatewayUpdate,
 		DeleteContext: resourceGatewayDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
@@ -150,6 +153,10 @@ func resourceGatewayCreate(ctx context.Context, d *schema.ResourceData, m interf
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_gateway", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
 		return diag.Errorf("Error creating gateway asset: %s", resp.Status)

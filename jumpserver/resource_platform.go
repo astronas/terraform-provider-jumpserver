@@ -19,6 +19,9 @@ func resourcePlatform() *schema.Resource {
 		UpdateContext: resourcePlatformUpdate,
 		DeleteContext: resourcePlatformDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -125,6 +128,10 @@ func resourcePlatformCreate(ctx context.Context, d *schema.ResourceData, m inter
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_platform", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
 		return diag.Errorf("Error creating platform: %s", resp.Status)

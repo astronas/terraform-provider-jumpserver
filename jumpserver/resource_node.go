@@ -18,6 +18,9 @@ func resourceNode() *schema.Resource {
 		UpdateContext: resourceNodeUpdate,
 		DeleteContext: resourceNodeDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"value": {
 				Type:        schema.TypeString,

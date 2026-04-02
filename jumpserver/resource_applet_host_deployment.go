@@ -18,6 +18,9 @@ func resourceAppletHostDeployment() *schema.Resource {
 		UpdateContext: resourceAppletHostDeploymentUpdate,
 		DeleteContext: resourceAppletHostDeploymentDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"host": {
 				Type:        schema.TypeString,
@@ -71,6 +74,10 @@ func resourceAppletHostDeploymentCreate(ctx context.Context, d *schema.ResourceD
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_applet_host_deployment", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating applet host deployment: %s", resp.Status)

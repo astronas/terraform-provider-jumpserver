@@ -19,6 +19,9 @@ func resourceUserGroupRelation() *schema.Resource {
 		UpdateContext: resourceUserGroupRelationUpdate,
 		DeleteContext: resourceUserGroupRelationDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"user": {
 				Type:        schema.TypeString,

@@ -4,8 +4,11 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
+	"strings"
 
+	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 )
 
@@ -14,6 +17,40 @@ const (
 	headerContentType = "Content-Type"
 	contentTypeJSON   = "application/json"
 )
+
+// checkAlreadyExists checks if an HTTP response indicates a resource already exists (400/409).
+// If so, it returns a diagnostic with a helpful message suggesting terraform import.
+// resourceType should be like "jumpserver_host", resourceName is the human-readable name.
+func checkAlreadyExists(resp *http.Response, resourceType, resourceName string) diag.Diagnostics {
+	if resp.StatusCode != http.StatusBadRequest && resp.StatusCode != http.StatusConflict {
+		return nil
+	}
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil
+	}
+	body := string(bodyBytes)
+	bodyLower := strings.ToLower(body)
+
+	if strings.Contains(bodyLower, "already exist") ||
+		strings.Contains(bodyLower, "duplicate") ||
+		strings.Contains(bodyLower, "unique") ||
+		strings.Contains(bodyLower, "already been taken") {
+		return diag.Diagnostics{
+			{
+				Severity: diag.Error,
+				Summary:  fmt.Sprintf("Resource '%s' already exists in JumpServer", resourceName),
+				Detail: fmt.Sprintf(
+					"The API returned: %s\n\nIf this resource already exists, import it with:\n  terraform import %s.<name> <uuid>",
+					strings.TrimSpace(body), resourceType,
+				),
+			},
+		}
+	}
+
+	return nil
+}
 
 // doRequest creates and executes an authenticated HTTP request.
 // If body is not nil, it will be marshaled to JSON and Content-Type will be set.

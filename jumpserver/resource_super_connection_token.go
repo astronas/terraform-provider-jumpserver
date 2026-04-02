@@ -18,6 +18,9 @@ func resourceSuperConnectionToken() *schema.Resource {
 		UpdateContext: resourceSuperConnectionTokenUpdate,
 		DeleteContext: resourceSuperConnectionTokenDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"account": {
 				Type:        schema.TypeString,

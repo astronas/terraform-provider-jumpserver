@@ -18,6 +18,9 @@ func resourceSetting() *schema.Resource {
 		UpdateContext: resourceSettingUpdate,
 		DeleteContext: resourceSettingDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"site_url": {
 				Type:        schema.TypeString,

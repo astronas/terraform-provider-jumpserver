@@ -18,6 +18,9 @@ func resourceRbacRole() *schema.Resource {
 		UpdateContext: resourceRbacRoleUpdate,
 		DeleteContext: resourceRbacRoleDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -108,6 +111,10 @@ func resourceRbacRoleCreate(ctx context.Context, d *schema.ResourceData, m inter
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_rbac_role", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating RBAC role: %s", resp.Status)

@@ -18,6 +18,9 @@ func resourceAppProvider() *schema.Resource {
 		UpdateContext: resourceAppProviderUpdate,
 		DeleteContext: resourceAppProviderDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -64,6 +67,10 @@ func resourceAppProviderCreate(ctx context.Context, d *schema.ResourceData, m in
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_app_provider", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating app provider: %s", resp.Status)

@@ -18,6 +18,9 @@ func resourceAsset() *schema.Resource {
 		UpdateContext: resourceAssetUpdate,
 		DeleteContext: resourceAssetDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"hostname": {
 				Type:        schema.TypeString,
@@ -66,6 +69,10 @@ func resourceAssetCreate(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_asset", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating asset: %s", resp.Status)

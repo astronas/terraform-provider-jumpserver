@@ -18,6 +18,9 @@ func resourceSystemMsgSubscription() *schema.Resource {
 		UpdateContext: resourceSystemMsgSubscriptionUpdate,
 		DeleteContext: resourceSystemMsgSubscriptionDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"message_type": {
 				Type:        schema.TypeString,

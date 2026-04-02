@@ -19,6 +19,9 @@ func resourceEndpoint() *schema.Resource {
 		UpdateContext: resourceEndpointUpdate,
 		DeleteContext: resourceEndpointDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -162,6 +165,10 @@ func resourceEndpointCreate(ctx context.Context, d *schema.ResourceData, m inter
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_endpoint", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating endpoint: %s", resp.Status)

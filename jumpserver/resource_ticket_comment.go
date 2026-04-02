@@ -18,6 +18,9 @@ func resourceTicketComment() *schema.Resource {
 		UpdateContext: resourceTicketCommentUpdate,
 		DeleteContext: resourceTicketCommentDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"body": {
 				Type:        schema.TypeString,

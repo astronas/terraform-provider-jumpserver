@@ -18,6 +18,9 @@ func resourceSessionSharing() *schema.Resource {
 		UpdateContext: resourceSessionSharingUpdate,
 		DeleteContext: resourceSessionSharingDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"session": {
 				Type:        schema.TypeString,

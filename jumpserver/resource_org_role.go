@@ -18,6 +18,9 @@ func resourceOrgRole() *schema.Resource {
 		UpdateContext: resourceOrgRoleUpdate,
 		DeleteContext: resourceOrgRoleDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -83,6 +86,10 @@ func resourceOrgRoleCreate(ctx context.Context, d *schema.ResourceData, m interf
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_org_role", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating org role: %s", resp.Status)

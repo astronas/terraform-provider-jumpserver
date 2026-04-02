@@ -18,6 +18,9 @@ func resourceAccessKey() *schema.Resource {
 		UpdateContext: resourceAccessKeyUpdate,
 		DeleteContext: resourceAccessKeyDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"is_active": {
 				Type:        schema.TypeBool,

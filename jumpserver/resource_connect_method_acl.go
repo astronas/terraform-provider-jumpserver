@@ -19,6 +19,9 @@ func resourceConnectMethodACL() *schema.Resource {
 		UpdateContext: resourceConnectMethodACLUpdate,
 		DeleteContext: resourceConnectMethodACLDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -105,6 +108,10 @@ func resourceConnectMethodACLCreate(ctx context.Context, d *schema.ResourceData,
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_connect_method_acl", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating connect method ACL: %s", resp.Status)

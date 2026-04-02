@@ -18,6 +18,9 @@ func resourceAssetPermission() *schema.Resource {
 		UpdateContext: resourceAssetPermissionUpdate,
 		DeleteContext: resourceAssetPermissionDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -96,6 +99,10 @@ func resourceAssetPermissionCreate(ctx context.Context, d *schema.ResourceData, 
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_asset_permission", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating asset permission: %s", resp.Status)

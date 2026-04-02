@@ -19,6 +19,9 @@ func resourceAssetPermNodeRelation() *schema.Resource {
 		UpdateContext: resourceAssetPermNodeRelationUpdate,
 		DeleteContext: resourceAssetPermNodeRelationDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"node": {
 				Type:        schema.TypeString,

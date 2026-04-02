@@ -19,6 +19,9 @@ func resourcePlaybook() *schema.Resource {
 		UpdateContext: resourcePlaybookUpdate,
 		DeleteContext: resourcePlaybookDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -83,6 +86,10 @@ func resourcePlaybookCreate(ctx context.Context, d *schema.ResourceData, m inter
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_playbook", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating playbook: %s", resp.Status)

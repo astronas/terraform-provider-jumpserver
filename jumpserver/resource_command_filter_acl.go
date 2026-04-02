@@ -19,6 +19,9 @@ func resourceCommandFilterACL() *schema.Resource {
 		UpdateContext: resourceCommandFilterACLUpdate,
 		DeleteContext: resourceCommandFilterACLDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -124,6 +127,10 @@ func resourceCommandFilterACLCreate(ctx context.Context, d *schema.ResourceData,
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_command_filter_acl", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating command filter ACL: %s", resp.Status)

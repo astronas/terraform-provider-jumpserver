@@ -19,6 +19,9 @@ func resourceTicketFlow() *schema.Resource {
 		UpdateContext: resourceTicketFlowUpdate,
 		DeleteContext: resourceTicketFlowDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"type": {
 				Type:     schema.TypeString,
@@ -83,6 +86,10 @@ func resourceTicketFlowCreate(ctx context.Context, d *schema.ResourceData, m int
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_ticket_flow", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating ticket flow: %s", resp.Status)

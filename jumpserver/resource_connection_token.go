@@ -18,6 +18,9 @@ func resourceConnectionToken() *schema.Resource {
 		UpdateContext: resourceConnectionTokenUpdate,
 		DeleteContext: resourceConnectionTokenDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"account": {
 				Type:        schema.TypeString,

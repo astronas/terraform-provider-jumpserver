@@ -19,6 +19,9 @@ func resourceAssetPermUserRelation() *schema.Resource {
 		UpdateContext: resourceAssetPermUserRelationUpdate,
 		DeleteContext: resourceAssetPermUserRelationDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"user": {
 				Type:        schema.TypeString,

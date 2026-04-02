@@ -18,6 +18,9 @@ func resourceDevice() *schema.Resource {
 		UpdateContext: resourceDeviceUpdate,
 		DeleteContext: resourceDeviceDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:     schema.TypeString,
@@ -148,6 +151,10 @@ func resourceDeviceCreate(ctx context.Context, d *schema.ResourceData, m interfa
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_device", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated && resp.StatusCode != http.StatusOK {
 		return diag.Errorf("Error creating device asset: %s", resp.Status)

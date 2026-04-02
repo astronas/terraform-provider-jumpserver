@@ -18,6 +18,9 @@ func resourceSessionJoinRecord() *schema.Resource {
 		UpdateContext: resourceSessionJoinRecordUpdate,
 		DeleteContext: resourceSessionJoinRecordDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"session": {
 				Type:        schema.TypeString,

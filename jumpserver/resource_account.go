@@ -144,6 +144,10 @@ func resourceAccountCreate(ctx context.Context, d *schema.ResourceData, m interf
 	}
 	defer resp.Body.Close()
 
+	if diags := checkAlreadyExists(resp, "jumpserver_account", d.Get("name").(string)); diags != nil {
+		return diags
+	}
+
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating account: %s", resp.Status)
 	}

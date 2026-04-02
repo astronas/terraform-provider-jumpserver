@@ -19,6 +19,9 @@ func resourceAssetPermUserGroupRelation() *schema.Resource {
 		UpdateContext: resourceAssetPermUserGroupRelationUpdate,
 		DeleteContext: resourceAssetPermUserGroupRelationDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"usergroup": {
 				Type:        schema.TypeString,

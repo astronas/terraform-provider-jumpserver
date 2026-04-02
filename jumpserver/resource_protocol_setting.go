@@ -19,6 +19,9 @@ func resourceProtocolSetting() *schema.Resource {
 		UpdateContext: resourceProtocolSettingUpdate,
 		DeleteContext: resourceProtocolSettingDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -93,6 +96,10 @@ func resourceProtocolSettingCreate(ctx context.Context, d *schema.ResourceData, 
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_protocol_setting", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating protocol setting: %s", resp.Status)

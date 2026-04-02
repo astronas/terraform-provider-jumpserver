@@ -19,6 +19,9 @@ func resourceLabeledResource() *schema.Resource {
 		UpdateContext: resourceLabeledResourceUpdate,
 		DeleteContext: resourceLabeledResourceDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"label": {
 				Type:        schema.TypeString,

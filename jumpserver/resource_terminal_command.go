@@ -18,6 +18,9 @@ func resourceTerminalCommand() *schema.Resource {
 		UpdateContext: resourceTerminalCommandUpdate,
 		DeleteContext: resourceTerminalCommandDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"user": {
 				Type:        schema.TypeString,
@@ -104,6 +107,10 @@ func resourceTerminalCommandCreate(ctx context.Context, d *schema.ResourceData, 
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_terminal_command", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating terminal command: %s", resp.Status)

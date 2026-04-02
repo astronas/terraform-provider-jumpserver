@@ -18,6 +18,9 @@ func resourceChatAIPrompt() *schema.Resource {
 		UpdateContext: resourceChatAIPromptUpdate,
 		DeleteContext: resourceChatAIPromptDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -63,6 +66,10 @@ func resourceChatAIPromptCreate(ctx context.Context, d *schema.ResourceData, m i
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_chatai_prompt", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating ChatAI prompt: %s", resp.Status)

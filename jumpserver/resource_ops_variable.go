@@ -18,6 +18,9 @@ func resourceOpsVariable() *schema.Resource {
 		UpdateContext: resourceOpsVariableUpdate,
 		DeleteContext: resourceOpsVariableDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -83,6 +86,10 @@ func resourceOpsVariableCreate(ctx context.Context, d *schema.ResourceData, m in
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_ops_variable", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating ops variable: %s", resp.Status)

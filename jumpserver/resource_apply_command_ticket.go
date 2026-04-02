@@ -18,6 +18,9 @@ func resourceApplyCommandTicket() *schema.Resource {
 		UpdateContext: resourceApplyCommandTicketUpdate,
 		DeleteContext: resourceApplyCommandTicketDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"title": {
 				Type:        schema.TypeString,
@@ -97,6 +100,10 @@ func resourceApplyCommandTicketCreate(ctx context.Context, d *schema.ResourceDat
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_apply_command_ticket", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating apply command ticket: %s", resp.Status)

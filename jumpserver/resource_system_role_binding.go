@@ -18,6 +18,9 @@ func resourceSystemRoleBinding() *schema.Resource {
 		UpdateContext: resourceSystemRoleBindingUpdate,
 		DeleteContext: resourceSystemRoleBindingDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"user": {
 				Type:        schema.TypeString,

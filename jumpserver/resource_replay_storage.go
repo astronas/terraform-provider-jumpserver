@@ -19,6 +19,9 @@ func resourceReplayStorage() *schema.Resource {
 		UpdateContext: resourceReplayStorageUpdate,
 		DeleteContext: resourceReplayStorageDelete,
 
+		Importer: &schema.ResourceImporter{
+			StateContext: schema.ImportStatePassthroughContext,
+		},
 		Schema: map[string]*schema.Schema{
 			"name": {
 				Type:        schema.TypeString,
@@ -78,6 +81,10 @@ func resourceReplayStorageCreate(ctx context.Context, d *schema.ResourceData, m 
 		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
+
+	if diags := checkAlreadyExists(resp, "jumpserver_replay_storage", d.Get("name").(string)); diags != nil {
+		return diags
+	}
 
 	if resp.StatusCode != http.StatusCreated {
 		return diag.Errorf("Error creating replay storage: %s", resp.Status)
