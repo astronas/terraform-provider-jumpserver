@@ -42,6 +42,33 @@ func (c *Config) doRequest(method, path string, body interface{}) (*http.Respons
 	return c.NewHTTPClient().Do(req)
 }
 
+// doRequestV2 creates and executes an authenticated HTTP request using the API v2 endpoint.
+// Used for resources that require /api/v2/ (e.g. perms/asset-permissions).
+func (c *Config) doRequestV2(method, path string, body interface{}) (*http.Response, error) {
+	url := c.GetAPIEndpointV2(path)
+
+	if body != nil {
+		jsonValue, err := json.Marshal(body)
+		if err != nil {
+			return nil, err
+		}
+		req, err := http.NewRequest(method, url, bytes.NewBuffer(jsonValue))
+		if err != nil {
+			return nil, err
+		}
+		req.Header.Set(headerContentType, contentTypeJSON)
+		req.Header.Set("Authorization", bearerPrefix+c.Token)
+		return c.NewHTTPClient().Do(req)
+	}
+
+	req, err := http.NewRequest(method, url, nil)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Set("Authorization", bearerPrefix+c.Token)
+	return c.NewHTTPClient().Do(req)
+}
+
 // readEnumValue reads a field that may be returned as either a string
 // or an object with {value, label} structure.
 func readEnumValue(data map[string]interface{}, key string) (string, bool) {

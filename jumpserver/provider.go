@@ -30,12 +30,14 @@ func (c *Config) NewHTTPClient() *http.Client {
 	return &http.Client{Transport: transport}
 }
 
-// GetAPIEndpoint returns the API endpoint URL based on the configured API version
+// GetAPIEndpoint returns the API v1 endpoint URL (used by most JumpServer resources)
 func (c *Config) GetAPIEndpoint(path string) string {
-	if c.APIVersion == "v2" {
-		return fmt.Sprintf("%s/api/v2/%s", c.BaseURL, path)
-	}
 	return fmt.Sprintf("%s/api/v1/%s", c.BaseURL, path)
+}
+
+// GetAPIEndpointV2 returns the API v2 endpoint URL (used by perms and other v2-only resources)
+func (c *Config) GetAPIEndpointV2(path string) string {
+	return fmt.Sprintf("%s/api/v2/%s", c.BaseURL, path)
 }
 
 func Provider() *schema.Provider {
@@ -64,7 +66,8 @@ func Provider() *schema.Provider {
 				Type:        schema.TypeString,
 				Optional:    true,
 				Default:     "v1",
-				Description: "JumpServer API version to use (v1 or v2). Default is v1.",
+				Deprecated:  "This field is deprecated and no longer affects API routing. Each resource now uses its correct API version automatically.",
+				Description: "Deprecated. JumpServer API version (v1 or v2). No longer used — each resource targets its own API version.",
 			},
 		},
 		DataSourcesMap: map[string]*schema.Resource{
@@ -227,12 +230,8 @@ func providerConfigure(ctx context.Context, d *schema.ResourceData) (interface{}
 }
 
 func getToken(client *http.Client, baseURL, username, password, apiVersion string) (string, error) {
-	var url string
-	if apiVersion == "v2" {
-		url = baseURL + "/api/v2/authentication/auth/"
-	} else {
-		url = baseURL + "/api/v1/authentication/auth/"
-	}
+	// Always authenticate via /api/v1/ (works on all JumpServer versions)
+	url := baseURL + "/api/v1/authentication/auth/"
 
 	credentials := map[string]string{
 		"username": username,
@@ -242,10 +241,6 @@ func getToken(client *http.Client, baseURL, username, password, apiVersion strin
 
 	resp, err := client.Post(url, "application/json", bytes.NewBuffer(jsonValue))
 	if err != nil {
-		// If v2 fails, try v1 as fallback
-		if apiVersion == "v2" {
-			return getToken(client, baseURL, username, password, "v1")
-		}
 		return "", err
 	}
 	defer resp.Body.Close()
@@ -257,11 +252,6 @@ func getToken(client *http.Client, baseURL, username, password, apiVersion strin
 
 	if token, ok := result["token"].(string); ok {
 		return token, nil
-	}
-
-	// If v2 fails to get token, try v1 as fallback
-	if apiVersion == "v2" {
-		return getToken(client, baseURL, username, password, "v1")
 	}
 
 	return "", fmt.Errorf("unable to fetch token from %s", url)
