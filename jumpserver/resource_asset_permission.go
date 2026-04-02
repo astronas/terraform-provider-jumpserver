@@ -94,7 +94,7 @@ func resourceAssetPermissionCreate(ctx context.Context, d *schema.ResourceData, 
 		"accounts":     d.Get("accounts").([]interface{}),
 	}
 
-	resp, err := c.doRequestV2("POST", assetPermissionBasePath, permission)
+	resp, err := c.doRequest("POST", assetPermissionBasePath, permission)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -126,7 +126,7 @@ func resourceAssetPermissionRead(ctx context.Context, d *schema.ResourceData, m 
 	c := m.(*Config)
 	var diags diag.Diagnostics
 
-	resp, err := c.doRequestV2("GET", assetPermissionBasePath+d.Id()+"/", nil)
+	resp, err := c.doRequest("GET", assetPermissionBasePath+d.Id()+"/", nil)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -187,7 +187,7 @@ func resourceAssetPermissionUpdate(ctx context.Context, d *schema.ResourceData, 
 		"accounts":     d.Get("accounts").([]interface{}),
 	}
 
-	resp, err := c.doRequestV2("PUT", assetPermissionBasePath+d.Id()+"/", permission)
+	resp, err := c.doRequest("PUT", assetPermissionBasePath+d.Id()+"/", permission)
 	if err != nil {
 		return diag.FromErr(err)
 	}
@@ -204,7 +204,7 @@ func resourceAssetPermissionDelete(ctx context.Context, d *schema.ResourceData, 
 	c := m.(*Config)
 	var diags diag.Diagnostics
 
-	resp, err := c.doRequestV2("DELETE", assetPermissionBasePath+d.Id()+"/", nil)
+	resp, err := c.doRequest("DELETE", assetPermissionBasePath+d.Id()+"/", nil)
 	if err != nil {
 		return diag.FromErr(err)
 	}
